@@ -12,6 +12,9 @@ define(['zepto.js'], function ($) {
 		// 禁掉浏览器默认验证
 		this.$form[0].noValidate = true;
 		this.options = options || {};
+		if (this.options.submit) {
+			this.bindSubmit();
+		}
 	};
 
 	var formProto = FormObject.prototype;
@@ -75,6 +78,10 @@ define(['zepto.js'], function ($) {
 					value = parseInt(value, 10);
 				} else if (valueType.indexOf('boolean') > -1) {
 					value = Boolean(value);				
+				}
+
+				if (valueType.indexOf('array') > -1) {
+					value = [value];
 				}
 				var valueName = el.attr('value-name') || name;
 				var subjectTo = el.attr('subject-to');
@@ -184,7 +191,7 @@ define(['zepto.js'], function ($) {
 
 				if (!singleValid) {
 					isValid = singleValid;
-					Util.invokeIfExists(validator.onError, [createErrorObj(type, name, value)]);
+					Util.invokeIfExists(validator.onInvalid, [createErrorObj(type, name, value)]);
 				}
 			});
 		});
@@ -193,34 +200,33 @@ define(['zepto.js'], function ($) {
 
 	/**
 	* 绑定表单提交事件
-	* @method submit
+	* @method bindSubmit
 	* @param {Object} options
 	* @public
 	*/
-	formProto.submit = function (options, validateOptions) {
+	formProto.bindSubmit = function (options, validateOptions) {
 		var self = this;
-		if (!self.validate(validateOptions)) {
-			return false;
-		}
-		// 保证submit后页面不会跳转
+		
 		this.$form.submit(function (e){
 			e.preventDefault();
+			if (!self.validate(validateOptions)) {
+				return false;
+			}
+
+			options = $.extend(self.options.submit, {
+				type: 'POST'
+			}, options);
+
+			if (!options.data) {
+				options.data = $.param(self.getData());
+			}		
+
+			Util.invokeIfExists(options.startSubmit);
+
+			$.ajax(options);
 		});
-		// 触发submit事件
-		this.$form.submit();
-	
-		options = $.extend(this.options.submit, {
-			type: 'POST'
-		}, options);
-
-		if (!options.data) {
-			options.data = $.param(self.getData());
-		}		
-
-		Util.invokeIfExists(options.startSubmit);
-
-		$.ajax(options);
 	};
+
 
 	return FormObject;
 });
