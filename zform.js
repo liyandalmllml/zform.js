@@ -40,7 +40,7 @@ define(['zepto.js'], function ($) {
 	 	$([].slice.call(this.$form.get(0).elements)).each(function() {
             var el = $(this);
             var type = el.attr('type');
-            if (this.nodeName.toLowerCase() !== 'fieldset' && type !== 'submit' && type !== 'reset' && type !== 'button' &&
+            if (this.nodeName.toLowerCase() !== 'fieldset' && !this.disabled && type !== 'submit' && type !== 'reset' && type !== 'button' &&
                 ((type !== 'radio' && type !== 'checkbox') || this.checked)) {
 	        	var name = el.attr('name');
 	        	if (!name) {
@@ -175,11 +175,11 @@ define(['zepto.js'], function ($) {
 							singleValid = false;
 						}
 					}
-				} else if (type === 'max-length' || type === 'maxlenght' || type === 'maxLenght') {
+				} else if (type === 'max-length' || type === 'maxlength' || type === 'maxLength') {
 					if (value && value.length > validator.value) {
 						singleValid = false;
 					}
-				} else if (type === 'min-length' || type === 'minlenght' || type === 'minLenght') {
+				} else if (type === 'min-length' || type === 'minlength' || type === 'minLength') {
 					if (value && value.length < validator.value) {
 						singleValid = false;							
 					} 
