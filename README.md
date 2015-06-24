@@ -9,13 +9,14 @@ In the future, there maybe more function, such as supporting async validating, m
 ##Zform
   ````javascript
   var form = new Zform('.form');
-  ````
+  ```
 ## API
-### getData
+### getData([options])
   ````javascript
   var data = form.getData();
   ````
-### validate
+ parse form data to object
+### validate([options])
 ````javascript
   var isValid = form.validate({
     phone: {
@@ -34,7 +35,8 @@ In the future, there maybe more function, such as supporting async validating, m
     }
   });
 ````
-### bindSubmit
+ validate form according to validate options
+### bindSubmit(options)
 ````javascript
   form.bindSubmit({
     url: 'http://xxx.xxx.xxx',
@@ -50,3 +52,4 @@ In the future, there maybe more function, such as supporting async validating, m
     }
   });
 ````
+ bind form submit listener
